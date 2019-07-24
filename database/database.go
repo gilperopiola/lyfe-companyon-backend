@@ -54,11 +54,21 @@ func (db *MyDatabase) CreateSchema() {
 	if _, err := db.DB.Exec(createTagsTableQuery); err != nil {
 		log.Println(err.Error())
 	}
+
+	if _, err := db.DB.Exec(createTasksTableQuery); err != nil {
+		log.Println(err.Error())
+	}
+
+	if _, err := db.DB.Exec(createTasksTagsTableQuery); err != nil {
+		log.Println(err.Error())
+	}
 }
 
 func (db *MyDatabase) Purge() {
 	db.DB.Exec("DELETE FROM users")
 	db.DB.Exec("DELETE FROM tags")
+	db.DB.Exec("DELETE FROM tasks")
+	db.DB.Exec("DELETE FROM tasks_tags")
 }
 
 func (db *MyDatabase) BeautifyError(err error) string {

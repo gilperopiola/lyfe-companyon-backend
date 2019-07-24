@@ -46,4 +46,12 @@ func (router *MyRouter) Setup() {
 		tags.GET("/:id_tag", GetTag)
 		tags.PUT("/:id_tag", UpdateTag)
 	}
+
+	tasks := router.Group("/Tasks", validateToken())
+	{
+		tasks.POST("", CreateTask)
+		tasks.GET("", SearchTasks)
+		tasks.GET("/:id_task", GetTask)
+		tasks.PUT("/:id_task", UpdateTask)
+	}
 }

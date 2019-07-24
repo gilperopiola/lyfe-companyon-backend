@@ -21,3 +21,20 @@ CREATE TABLE IF NOT EXISTS tags (
 	enabled tinyint DEFAULT '1'
 )
 `
+
+var createTasksTableQuery = `
+CREATE TABLE IF NOT EXISTS tasks (
+	id int UNIQUE NOT NULL AUTO_INCREMENT,
+	name varchar(255) NOT NULL,
+	importance int NOT NULL,
+	status int NOT NULL DEFAULT '1'
+)
+`
+
+var createTasksTagsTableQuery = `
+CREATE TABLE IF NOT EXISTS tasks_tags (
+	id int UNIQUE NOT NULL AUTO_INCREMENT,
+	idTask int NOT NULL,
+	idTag int NOT NULL
+)
+`

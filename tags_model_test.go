@@ -109,3 +109,19 @@ func TestSearchTags(t *testing.T) {
 	assert.Equal(t, "secondaryColor18", tags[0].SecondaryColor)
 	assert.True(t, tags[0].Enabled)
 }
+
+//used for testing entities that use tags
+func createTestingTags(n int) []*Tag {
+	tags := []*Tag{}
+	for i := 1; i <= n; i++ {
+		tag := &Tag{
+			Name:           "name" + utils.ToString(i),
+			PrimaryColor:   "primaryColor" + utils.ToString(i),
+			SecondaryColor: "secondaryColor" + utils.ToString(i),
+		}
+		tag, _ = tag.Create()
+		tags = append(tags, tag)
+	}
+
+	return tags
+}
