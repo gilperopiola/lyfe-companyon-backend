@@ -31,11 +31,19 @@ func (router *MyRouter) Setup() {
 		public.POST("/Login", Login)
 	}
 
-	users := router.Group("/Users")
+	users := router.Group("/Users", validateToken())
 	{
 		users.POST("", CreateUser)
 		users.GET("", SearchUsers)
 		users.GET("/:id_user", GetUser)
 		users.PUT("/:id_user", UpdateUser)
+	}
+
+	tags := router.Group("/Tags", validateToken())
+	{
+		tags.POST("", CreateTag)
+		tags.GET("", SearchTags)
+		tags.GET("/:id_tag", GetTag)
+		tags.PUT("/:id_tag", UpdateTag)
 	}
 }

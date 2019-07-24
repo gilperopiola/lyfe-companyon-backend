@@ -50,10 +50,15 @@ func (db *MyDatabase) CreateSchema() {
 	if _, err := db.DB.Exec(createUsersTableQuery); err != nil {
 		log.Println(err.Error())
 	}
+
+	if _, err := db.DB.Exec(createTagsTableQuery); err != nil {
+		log.Println(err.Error())
+	}
 }
 
 func (db *MyDatabase) Purge() {
 	db.DB.Exec("DELETE FROM users")
+	db.DB.Exec("DELETE FROM tags")
 }
 
 func (db *MyDatabase) BeautifyError(err error) string {

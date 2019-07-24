@@ -18,7 +18,7 @@ type Auth struct {
 	Code           string
 }
 
-func validateToken(requiredRole string) gin.HandlerFunc {
+func validateToken() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenString := c.Request.Header.Get("Authorization")
 

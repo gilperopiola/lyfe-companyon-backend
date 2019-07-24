@@ -11,3 +11,13 @@ CREATE TABLE IF NOT EXISTS users (
 	dateCreated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 )
 `
+
+var createTagsTableQuery = `
+CREATE TABLE IF NOT EXISTS tags (
+	id int UNIQUE NOT NULL AUTO_INCREMENT,
+	name varchar(63) UNIQUE NOT NULL,
+	primaryColor varchar(31) NOT NULL,
+	secondaryColor varchar(31) NOT NULL,
+	enabled tinyint DEFAULT '1'
+)
+`
