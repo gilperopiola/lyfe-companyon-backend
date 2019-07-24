@@ -27,7 +27,15 @@ func (router *MyRouter) Setup() {
 
 	public := router.Group("/")
 	{
-		public.POST("/SignUp", SignUp)
-		public.POST("/LogIn", Login)
+		public.POST("/Signup", SignUp)
+		public.POST("/Login", Login)
+	}
+
+	users := router.Group("/Users")
+	{
+		users.POST("", CreateUser)
+		users.GET("", SearchUsers)
+		users.GET("/:id_user", GetUser)
+		users.PUT("/:id_user", UpdateUser)
 	}
 }

@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"database/sql"
 	"strconv"
 )
 
@@ -13,6 +14,14 @@ func ToInt(s string) int {
 	return val
 }
 
-func StripLastInsertID(id int64, err error) int {
+func BoolToString(b bool) string {
+	if b {
+		return "true"
+	}
+	return "false"
+}
+
+func GetEntryID(result sql.Result) int {
+	id, _ := result.LastInsertId()
 	return int(id)
 }

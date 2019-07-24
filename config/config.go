@@ -34,7 +34,7 @@ type MyConfig struct {
 func (config *MyConfig) Setup(env string) {
 	viper.AddConfigPath(".")
 	viper.AddConfigPath("./config")
-	viper.SetConfigName("config" + env) //config filename without the .JSON or .YAML extension
+	viper.SetConfigName("config_" + env) //config filename without the .JSON or .YAML extension
 
 	if err := viper.ReadInConfig(); err != nil {
 		log.Fatalf("error reading config: %v", err)
