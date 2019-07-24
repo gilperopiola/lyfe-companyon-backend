@@ -1,0 +1,8 @@
+1. Update config and everything updateable (maybe utils?)
+2. Tasks
+    ParentID
+    Importance
+    DueDate
+    Tags => Daily, Weekly
+    Status => To do, Doing, Done
+3. Calendar
