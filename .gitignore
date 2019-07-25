@@ -12,5 +12,5 @@
 *.out
 
 # Config files
-config_local.json
-config_testing.json
+config_dev.json
+config_prod.json
