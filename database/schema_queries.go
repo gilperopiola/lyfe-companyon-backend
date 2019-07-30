@@ -26,8 +26,10 @@ var createTasksTableQuery = `
 CREATE TABLE IF NOT EXISTS tasks (
 	id int UNIQUE NOT NULL AUTO_INCREMENT,
 	name varchar(255) NOT NULL,
+	description varchar(2047),
 	importance int NOT NULL,
-	status int NOT NULL DEFAULT '1'
+	status int NOT NULL DEFAULT '1',
+	dateCreated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 )
 `
 

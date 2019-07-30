@@ -13,9 +13,10 @@ func TestCreateTask(t *testing.T) {
 	defer db.Close()
 
 	task := &Task{
-		Name:       "name",
-		Importance: 10,
-		Tags:       createTestingTags(2),
+		Name:        "name",
+		Description: "description",
+		Importance:  10,
+		Tags:        createTestingTags(2),
 	}
 
 	task, err := task.Create()
@@ -23,9 +24,11 @@ func TestCreateTask(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotZero(t, task.ID)
 	assert.Equal(t, "name", task.Name)
+	assert.Equal(t, "description", task.Description)
 	assert.Equal(t, 10, task.Importance)
 	assert.Equal(t, Pending, task.Status)
 	assert.Equal(t, 2, len(task.Tags))
+	assert.NotZero(t, task.DateCreated)
 }
 
 func TestGetTask(t *testing.T) {

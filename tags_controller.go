@@ -75,3 +75,16 @@ func SearchTags(c *gin.Context) {
 
 	c.JSON(http.StatusOK, tags)
 }
+
+//todo this and the model are untested
+func GetTagTasks(c *gin.Context) {
+	tag := &Tag{ID: utils.ToInt(c.Param("id_tag"))}
+
+	tasks, err := tag.GetTasks()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, db.BeautifyError(err))
+		return
+	}
+
+	c.JSON(http.StatusOK, tasks)
+}

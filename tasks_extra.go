@@ -29,6 +29,7 @@ func (task *Task) GetJSONBody() string {
 
 	body := `{
 		"name": "` + task.Name + `",
+		"description": "` + task.Description + `",
 		"importance": ` + utils.ToString(task.Importance) + `,
 		"status": ` + utils.ToString(int(task.Status)) + `,
 		"tags": [` + tagsString + `]

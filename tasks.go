@@ -2,14 +2,17 @@ package main
 
 import (
 	"net/http/httptest"
+	"time"
 )
 
 type Task struct {
-	ID         int
-	Name       string
-	Importance int
-	Status     TaskStatus
-	Tags       []*Tag
+	ID          int
+	Name        string
+	Description string
+	Importance  int
+	Status      TaskStatus
+	Tags        []*Tag
+	DateCreated time.Time
 }
 
 type TaskActions interface {

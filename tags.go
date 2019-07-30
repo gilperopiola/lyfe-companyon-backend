@@ -17,6 +17,8 @@ type TagActions interface {
 	Get() (*Tag, error)
 	Update() (*Tag, error)
 	Search(params *SearchParameters) ([]*Tag, error)
+
+	GetTasks() (*[]Task, error)
 }
 
 type TagTestingActions interface {

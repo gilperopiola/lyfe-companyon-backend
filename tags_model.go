@@ -63,3 +63,28 @@ func (tag *Tag) Search(params *SearchParameters) ([]*Tag, error) {
 
 	return tags, nil
 }
+
+func (tag *Tag) GetTasks() ([]*Task, error) {
+	rows, err := db.DB.Query(`SELECT idTask FROM tasks_tags WHERE idTag = ?`, tag.ID)
+	defer rows.Close()
+	if err != nil {
+		return []*Task{}, err
+	}
+
+	tasks := []*Task{}
+	for rows.Next() {
+		tempTask := &Task{}
+		if err = rows.Scan(&tempTask.ID); err != nil {
+			return []*Task{}, err
+		}
+
+		tempTask, err = tempTask.Get()
+		if err != nil {
+			return []*Task{}, err
+		}
+
+		tasks = append(tasks, tempTask)
+	}
+
+	return tasks, nil
+}
