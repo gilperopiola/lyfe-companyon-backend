@@ -16,6 +16,7 @@ type TaskActions interface {
 	Create() (*Task, error)
 	Get() (*Task, error)
 	Update() (*Task, error)
+	UpdateStatus() (*Task, error)
 	Search(params *SearchParameters) ([]*Task, error)
 
 	createTags() ([]*Tag, error)

@@ -75,3 +75,27 @@ func SearchTasks(c *gin.Context) {
 
 	c.JSON(http.StatusOK, tasks)
 }
+
+func CompleteTask(c *gin.Context) {
+	task := &Task{ID: utils.ToInt(c.Param("id_task")), Status: Done}
+
+	task, err := task.UpdateStatus()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, db.BeautifyError(err))
+		return
+	}
+
+	c.JSON(http.StatusOK, task)
+}
+
+func ArchiveTask(c *gin.Context) {
+	task := &Task{ID: utils.ToInt(c.Param("id_task")), Status: Archived}
+
+	task, err := task.UpdateStatus()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, db.BeautifyError(err))
+		return
+	}
+
+	c.JSON(http.StatusOK, task)
+}

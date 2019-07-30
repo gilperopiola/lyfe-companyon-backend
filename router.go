@@ -53,5 +53,7 @@ func (router *MyRouter) Setup() {
 		tasks.GET("", SearchTasks)
 		tasks.GET("/:id_task", GetTask)
 		tasks.PUT("/:id_task", UpdateTask)
+		tasks.PUT("/:id_task/Complete", CompleteTask)
+		tasks.PUT("/:id_task/Archive", ArchiveTask)
 	}
 }
