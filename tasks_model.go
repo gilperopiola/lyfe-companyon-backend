@@ -7,7 +7,7 @@ import (
 )
 
 func (task *Task) Create() (*Task, error) {
-	result, err := db.DB.Exec(`INSERT INTO tasks (name, description, importance) VALUES (?, ?, ?)`, task.Name, task.Description, task.Importance)
+	result, err := db.DB.Exec(`INSERT INTO tasks (name, description, importance, duration) VALUES (?, ?, ?, ?)`, task.Name, task.Description, task.Importance, task.Duration)
 	if err != nil {
 		return &Task{}, err
 	}
@@ -23,7 +23,7 @@ func (task *Task) Create() (*Task, error) {
 }
 
 func (task *Task) Get() (*Task, error) {
-	err := db.DB.QueryRow(`SELECT name, description, importance, status, dateCreated FROM tasks WHERE id = ?`, task.ID).Scan(&task.Name, &task.Description, &task.Importance, &task.Status, &task.DateCreated)
+	err := db.DB.QueryRow(`SELECT name, description, importance, status, duration, dateCreated FROM tasks WHERE id = ?`, task.ID).Scan(&task.Name, &task.Description, &task.Importance, &task.Status, &task.Duration, &task.DateCreated)
 	if err != nil {
 		return &Task{}, err
 	}
@@ -37,7 +37,7 @@ func (task *Task) Get() (*Task, error) {
 }
 
 func (task *Task) Update() (*Task, error) {
-	_, err := db.DB.Exec(`UPDATE tasks SET name = ?, description = ?, importance = ?, status = ? WHERE id = ?`, task.Name, task.Description, task.Importance, task.Status, task.ID)
+	_, err := db.DB.Exec(`UPDATE tasks SET name = ?, description = ?, importance = ?, status = ?, duration = ? WHERE id = ?`, task.Name, task.Description, task.Importance, task.Status, task.Duration, task.ID)
 	if err != nil {
 		return &Task{}, err
 	}
@@ -81,7 +81,21 @@ func (task *Task) Search(params *SearchParameters) ([]*Task, error) {
 			return []*Task{}, err
 		}
 
-		tasks = append(tasks, tempTask)
+		hasRequiredTag := true
+		if params.FilterTagID != 0 {
+			hasRequiredTag = false
+
+			for _, tag := range tempTask.Tags {
+				if tag.ID == params.FilterTagID {
+					hasRequiredTag = true
+					break
+				}
+			}
+		}
+
+		if hasRequiredTag {
+			tasks = append(tasks, tempTask)
+		}
 	}
 
 	return tasks, nil

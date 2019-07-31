@@ -4,6 +4,7 @@ import "fmt"
 
 type SearchParameters struct {
 	Filter        string
+	FilterTagID   int
 	SortField     string
 	SortDirection string
 	Limit         int

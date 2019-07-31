@@ -11,6 +11,7 @@ type Task struct {
 	Description string
 	Importance  int
 	Status      TaskStatus
+	Duration    TaskDuration
 	Tags        []*Tag
 	DateCreated time.Time
 }
@@ -39,4 +40,14 @@ const (
 	Doing    TaskStatus = 2
 	Done     TaskStatus = 3
 	Archived TaskStatus = 4
+)
+
+type TaskDuration int
+
+const (
+	ExtraSmall TaskDuration = 1
+	Small      TaskDuration = 2
+	Medium     TaskDuration = 3
+	Large      TaskDuration = 4
+	ExtraLarge TaskDuration = 5
 )

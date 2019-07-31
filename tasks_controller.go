@@ -42,8 +42,8 @@ func UpdateTask(c *gin.Context) {
 	c.BindJSON(&task)
 	task.ID = utils.ToInt(c.Param("id_task"))
 
-	if task.Name == "" || task.Importance == 0 {
-		c.JSON(http.StatusBadRequest, "name and importance required")
+	if task.Name == "" || task.Importance == 0 || task.Duration == 0 {
+		c.JSON(http.StatusBadRequest, "all fields required")
 		return
 	}
 
@@ -61,6 +61,7 @@ func SearchTasks(c *gin.Context) {
 
 	params := &SearchParameters{
 		Filter:        c.Query("filter"),
+		FilterTagID:   utils.ToInt(c.Query("filterTagID")),
 		SortField:     c.Query("sortField"),
 		SortDirection: c.Query("sortDirection"),
 		Limit:         utils.ToInt(c.Query("limit")),

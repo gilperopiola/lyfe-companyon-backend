@@ -16,6 +16,7 @@ func TestCreateTask(t *testing.T) {
 		Name:        "name",
 		Description: "description",
 		Importance:  10,
+		Duration:    Large,
 		Tags:        createTestingTags(2),
 	}
 
@@ -27,6 +28,7 @@ func TestCreateTask(t *testing.T) {
 	assert.Equal(t, "description", task.Description)
 	assert.Equal(t, 10, task.Importance)
 	assert.Equal(t, Pending, task.Status)
+	assert.Equal(t, Large, task.Duration)
 	assert.Equal(t, 2, len(task.Tags))
 	assert.NotZero(t, task.DateCreated)
 }

@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS tasks (
 	description varchar(2047),
 	importance int NOT NULL,
 	status int NOT NULL DEFAULT '1',
+	duration int NOT NULL DEFAULT '2',
 	dateCreated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 )
 `
