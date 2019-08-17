@@ -60,12 +60,13 @@ func SearchTasks(c *gin.Context) {
 	task := &Task{}
 
 	params := &SearchParameters{
-		Filter:        c.Query("filter"),
-		FilterTagID:   utils.ToInt(c.Query("filterTagID")),
-		SortField:     c.Query("sortField"),
-		SortDirection: c.Query("sortDirection"),
-		Limit:         utils.ToInt(c.Query("limit")),
-		Offset:        utils.ToInt(c.Query("offset")),
+		Filter:           c.Query("filter"),
+		FilterTagID:      utils.ToInt(c.Query("filterTagID")),
+		FilterImportance: utils.ToInt(c.Query("filterImportance")),
+		SortField:        c.Query("sortField"),
+		SortDirection:    c.Query("sortDirection"),
+		Limit:            utils.ToInt(c.Query("limit")),
+		Offset:           utils.ToInt(c.Query("offset")),
 	}
 
 	tasks, err := task.Search(params)

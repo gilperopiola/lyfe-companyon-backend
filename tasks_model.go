@@ -60,10 +60,10 @@ func (task *Task) UpdateStatus() (*Task, error) {
 }
 
 func (task *Task) Search(params *SearchParameters) ([]*Task, error) {
-	query := fmt.Sprintf(`SELECT id FROM tasks WHERE (id LIKE ? OR name LIKE ?) AND status != %d AND status != %d ORDER BY %s LIMIT ? OFFSET ?`, Done, Archived, getSearchOrderBy(params))
+	query := fmt.Sprintf(`SELECT id FROM tasks WHERE (id LIKE ? OR name LIKE ?) AND status != %d AND status != %d AND importance != ? ORDER BY %s LIMIT ? OFFSET ?`, Done, Archived, getSearchOrderBy(params))
 
 	params.Filter = "%" + params.Filter + "%"
-	rows, err := db.DB.Query(query, params.Filter, params.Filter, params.Limit, params.Offset)
+	rows, err := db.DB.Query(query, params.Filter, params.Filter, params.FilterImportance, params.Limit, params.Offset)
 	defer rows.Close()
 	if err != nil {
 		return []*Task{}, err
