@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 
+	"github.com/gilperopiola/lyfe-companyon-backend/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,7 +22,7 @@ func SignUp(c *gin.Context) {
 		return
 	}
 
-	hashedPassword := hash(auth.Email, auth.Password)
+	hashedPassword := utils.Hash(auth.Email, auth.Password)
 
 	user := &User{
 		Email:    auth.Email,
@@ -47,7 +48,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	hashedPassword := hash(auth.Email, auth.Password)
+	hashedPassword := utils.Hash(auth.Email, auth.Password)
 
 	user := &User{
 		Email:    auth.Email,

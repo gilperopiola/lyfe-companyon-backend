@@ -16,7 +16,7 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	user.Password = hash(user.Email, user.Password)
+	user.Password = utils.Hash(user.Email, user.Password)
 
 	user, err := user.Create()
 	if err != nil {

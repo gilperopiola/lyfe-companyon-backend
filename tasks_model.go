@@ -7,7 +7,7 @@ import (
 )
 
 func (task *Task) Create() (*Task, error) {
-	result, err := db.DB.Exec(`INSERT INTO tasks (name, description, importance, duration) VALUES (?, ?, ?, ?)`, task.Name, task.Description, task.Importance, task.Duration)
+	result, err := db.DB.Exec(`INSERT INTO tasks (name, description, importance, duration, dueDate) VALUES (?, ?, ?, ?, ?)`, task.Name, task.Description, task.Importance, task.Duration, task.DueDate)
 	if err != nil {
 		return &Task{}, err
 	}
@@ -23,7 +23,7 @@ func (task *Task) Create() (*Task, error) {
 }
 
 func (task *Task) Get() (*Task, error) {
-	err := db.DB.QueryRow(`SELECT name, description, importance, status, duration, dateCreated FROM tasks WHERE id = ?`, task.ID).Scan(&task.Name, &task.Description, &task.Importance, &task.Status, &task.Duration, &task.DateCreated)
+	err := db.DB.QueryRow(`SELECT name, description, importance, status, duration, dueDate, dateCreated FROM tasks WHERE id = ?`, task.ID).Scan(&task.Name, &task.Description, &task.Importance, &task.Status, &task.Duration, &task.DueDate, &task.DateCreated)
 	if err != nil {
 		return &Task{}, err
 	}
@@ -37,7 +37,7 @@ func (task *Task) Get() (*Task, error) {
 }
 
 func (task *Task) Update() (*Task, error) {
-	_, err := db.DB.Exec(`UPDATE tasks SET name = ?, description = ?, importance = ?, status = ?, duration = ? WHERE id = ?`, task.Name, task.Description, task.Importance, task.Status, task.Duration, task.ID)
+	_, err := db.DB.Exec(`UPDATE tasks SET name = ?, description = ?, importance = ?, status = ?, duration = ?, dueDate = ? WHERE id = ?`, task.Name, task.Description, task.Importance, task.Status, task.Duration, task.DueDate, task.ID)
 	if err != nil {
 		return &Task{}, err
 	}
@@ -60,7 +60,7 @@ func (task *Task) UpdateStatus() (*Task, error) {
 }
 
 func (task *Task) Search(params *SearchParameters) ([]*Task, error) {
-	query := fmt.Sprintf(`SELECT id FROM tasks WHERE (id LIKE ? OR name LIKE ?) AND status != %d AND status != %d AND importance != ? ORDER BY %s LIMIT ? OFFSET ?`, Done, Archived, getSearchOrderBy(params))
+	query := fmt.Sprintf(`SELECT id FROM tasks WHERE (id LIKE ? OR name LIKE ?) AND status != %d AND status != %d AND importance >= ? ORDER BY %s LIMIT ? OFFSET ?`, Done, Archived, getSearchOrderBy(params))
 
 	params.Filter = "%" + params.Filter + "%"
 	rows, err := db.DB.Query(query, params.Filter, params.Filter, params.FilterImportance, params.Limit, params.Offset)

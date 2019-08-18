@@ -1,8 +1,6 @@
 package main
 
 import (
-	"crypto/sha1"
-	"encoding/base64"
 	"fmt"
 	"net/http"
 	"time"
@@ -67,10 +65,4 @@ func generateTestingToken() string {
 	})
 	tokenString, _ := token.SignedString([]byte(cfg.JWT.SECRET))
 	return tokenString
-}
-
-func hash(salt string, data string) string {
-	hasher := sha1.New()
-	hasher.Write([]byte(salt + data))
-	return base64.URLEncoding.EncodeToString(hasher.Sum(nil))
 }

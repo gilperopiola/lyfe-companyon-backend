@@ -8,7 +8,8 @@
     "hostname": "127.0.0.1",
     "port": "3306",
     "schema": "lyfe_companyon_local",
-    "create_schema": true,
+    "create_schema": false,
+    "create_admin": false,
     "purge": false
   },
   "jwt": {

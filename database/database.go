@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/gilperopiola/lyfe-companyon-backend/config"
+	"github.com/gilperopiola/lyfe-companyon-backend/utils"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -44,6 +45,10 @@ func (db *MyDatabase) Setup(cfg config.MyConfig) {
 	if cfg.DATABASE.PURGE {
 		db.Purge()
 	}
+
+	if cfg.DATABASE.CREATE_ADMIN {
+		db.CreateAdmin()
+	}
 }
 
 func (db *MyDatabase) CreateSchema() {
@@ -69,6 +74,18 @@ func (db *MyDatabase) Purge() {
 	db.DB.Exec("DELETE FROM tags")
 	db.DB.Exec("DELETE FROM tasks")
 	db.DB.Exec("DELETE FROM tasks_tags")
+}
+
+func (db *MyDatabase) CreateAdmin() {
+	email := "ferra.main@gmail.com"
+	password := utils.Hash(email, "password")
+	firstName := "Franco"
+	lastName := "Ferraguti"
+
+	_, err := db.DB.Exec(`INSERT INTO users (email, password, firstName, lastName) VALUES (?, ?, ?, ?)`, email, password, firstName, lastName)
+	if err != nil {
+		log.Println(err.Error())
+	}
 }
 
 func (db *MyDatabase) BeautifyError(err error) string {

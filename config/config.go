@@ -23,6 +23,7 @@ type MyConfig struct {
 		SCHEMA   string
 
 		CREATE_SCHEMA bool
+		CREATE_ADMIN  bool
 		PURGE         bool
 	}
 	JWT struct {

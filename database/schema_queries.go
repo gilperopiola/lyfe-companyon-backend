@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS tasks (
 	importance int NOT NULL,
 	status int NOT NULL DEFAULT '1',
 	duration int NOT NULL DEFAULT '2',
+	dueDate TIMESTAMP,
 	dateCreated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 )
 `
