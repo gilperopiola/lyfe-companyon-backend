@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS tags (
 	name varchar(63) UNIQUE NOT NULL,
 	primaryColor varchar(31) NOT NULL,
 	secondaryColor varchar(31) NOT NULL,
+	public tinyint DEFAULT '1',
 	enabled tinyint DEFAULT '1'
 )
 `

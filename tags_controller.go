@@ -63,6 +63,7 @@ func SearchTags(c *gin.Context) {
 		Filter:        c.Query("filter"),
 		SortField:     c.Query("sortField"),
 		SortDirection: c.Query("sortDirection"),
+		ShowPrivate:   utils.ToBool(c.Query("showPrivate")),
 		Limit:         utils.ToInt(c.Query("limit")),
 		Offset:        utils.ToInt(c.Query("offset")),
 	}

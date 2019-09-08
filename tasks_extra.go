@@ -32,6 +32,7 @@ func (task *Task) GetJSONBody() string {
 		"description": "` + task.Description + `",
 		"importance": ` + utils.ToString(task.Importance) + `,
 		"status": ` + utils.ToString(int(task.Status)) + `,
+		"duration": ` + utils.ToString(int(task.Duration)) + `,
 		"tags": [` + tagsString + `]
 	}`
 	return body

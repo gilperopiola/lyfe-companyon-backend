@@ -81,19 +81,34 @@ func (task *Task) Search(params *SearchParameters) ([]*Task, error) {
 			return []*Task{}, err
 		}
 
-		hasRequiredTag := true
-		if params.FilterTagID != 0 {
-			hasRequiredTag = false
+		hasRequiredTag := func(tags []*Tag, filterTagID int) bool {
+			hasRequiredTag := true
+			if filterTagID != 0 {
+				hasRequiredTag = false
 
-			for _, tag := range tempTask.Tags {
-				if tag.ID == params.FilterTagID {
-					hasRequiredTag = true
-					break
+				for _, tag := range tags {
+					if tag.ID == filterTagID {
+						hasRequiredTag = true
+						break
+					}
 				}
 			}
+
+			return hasRequiredTag
 		}
 
-		if hasRequiredTag {
+		hasRequiredPrivacy := func(tags []*Tag, showPrivate bool) bool {
+			if !showPrivate {
+				for _, tag := range tags {
+					if !tag.Public {
+						return false
+					}
+				}
+			}
+			return true
+		}
+
+		if hasRequiredTag(tempTask.Tags, params.FilterTagID) && hasRequiredPrivacy(tempTask.Tags, params.ShowPrivate) {
 			tasks = append(tasks, tempTask)
 		}
 	}

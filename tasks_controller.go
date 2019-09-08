@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gilperopiola/lyfe-companyon-backend/utils"
@@ -43,6 +44,7 @@ func UpdateTask(c *gin.Context) {
 	task.ID = utils.ToInt(c.Param("id_task"))
 
 	if task.Name == "" || task.Importance == 0 || task.Duration == 0 {
+		log.Printf("%v", task)
 		c.JSON(http.StatusBadRequest, "all fields required")
 		return
 	}
@@ -65,6 +67,7 @@ func SearchTasks(c *gin.Context) {
 		FilterImportance: utils.ToInt(c.Query("filterImportance")),
 		SortField:        c.Query("sortField"),
 		SortDirection:    c.Query("sortDirection"),
+		ShowPrivate:      utils.ToBool(c.Query("showPrivate")),
 		Limit:            utils.ToInt(c.Query("limit")),
 		Offset:           utils.ToInt(c.Query("offset")),
 	}

@@ -19,7 +19,7 @@ func TestCreateUserController(t *testing.T) {
 
 	user := &User{
 		Email:     "email",
-		Password:  hash("email", "password"),
+		Password:  utils.Hash("email", "password"),
 		FirstName: "firstName",
 		LastName:  "lastName",
 	}
@@ -39,7 +39,7 @@ func TestGetUserController(t *testing.T) {
 
 	user := &User{
 		Email:     "email",
-		Password:  hash("email", "password"),
+		Password:  utils.Hash("email", "password"),
 		FirstName: "firstName",
 		LastName:  "lastName",
 	}
@@ -60,7 +60,7 @@ func TestUpdateUserController(t *testing.T) {
 
 	user := &User{
 		Email:     "email",
-		Password:  hash("email", "password"),
+		Password:  utils.Hash("email", "password"),
 		FirstName: "firstName",
 		LastName:  "lastName",
 	}
@@ -87,7 +87,7 @@ func TestSearchUserController(t *testing.T) {
 	for i := 15; i <= 25; i++ {
 		user = &User{
 			Email:     "email" + utils.ToString(i),
-			Password:  hash("email"+utils.ToString(i), "password"),
+			Password:  utils.Hash("email"+utils.ToString(i), "password"),
 			FirstName: "firstName" + utils.ToString(i),
 			LastName:  "lastName" + utils.ToString(i),
 		}

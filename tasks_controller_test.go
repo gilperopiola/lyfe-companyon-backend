@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 	"testing"
@@ -61,19 +62,23 @@ func TestUpdateTaskController(t *testing.T) {
 	task := &Task{
 		Name:       "name",
 		Importance: 10,
+		Duration:   Small,
 		Tags:       tags,
 	}
 	task, _ = task.Create()
 
 	task.Name = "name2"
 	task.Status = Doing
+	task.Duration = Medium
 	task.Tags = []*Tag{tags[0]}
 
 	response := task.GenerateTestRequest(token, "PUT", "/"+strconv.Itoa(task.ID))
 	json.Unmarshal(response.Body.Bytes(), &task)
+	log.Println(response.Body.String())
 	assert.Equal(t, http.StatusOK, response.Code)
 	assert.Equal(t, "name2", task.Name)
 	assert.Equal(t, Doing, task.Status)
+	assert.Equal(t, Medium, task.Duration)
 	assert.Equal(t, 1, len(task.Tags))
 }
 

@@ -3,13 +3,14 @@ package main
 import "fmt"
 
 type SearchParameters struct {
-	Filter        string
-	FilterTagID   int
+	Filter           string
+	FilterTagID      int
 	FilterImportance int
-	SortField     string
-	SortDirection string
-	Limit         int
-	Offset        int
+	ShowPrivate      bool
+	SortField        string
+	SortDirection    string
+	Limit            int
+	Offset           int
 }
 
 func getSearchOrderBy(params *SearchParameters) string {
@@ -23,6 +24,6 @@ func getSearchOrderBy(params *SearchParameters) string {
 }
 
 func getSearchURL(params *SearchParameters) string {
-	return fmt.Sprintf("?filter=%s&sortField=%s&sortDirection=%s&limit=%d&offset=%d",
-		params.Filter, params.SortField, params.SortDirection, params.Limit, params.Offset)
+	return fmt.Sprintf("?filter=%s&sortField=%s&sortDirection=%s&showPrivate=%t&limit=%d&offset=%d",
+		params.Filter, params.SortField, params.SortDirection, params.ShowPrivate, params.Limit, params.Offset)
 }

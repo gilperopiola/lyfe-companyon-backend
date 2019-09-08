@@ -94,6 +94,7 @@ func TestSearchTagController(t *testing.T) {
 		Filter:        "name1",
 		SortField:     "id",
 		SortDirection: "DESC",
+		ShowPrivate:   true,
 		Limit:         3,
 		Offset:        1,
 	}

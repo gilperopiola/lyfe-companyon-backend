@@ -9,6 +9,7 @@ type Tag struct {
 	Name           string
 	PrimaryColor   string
 	SecondaryColor string
+	Public         bool
 	Enabled        bool
 }
 

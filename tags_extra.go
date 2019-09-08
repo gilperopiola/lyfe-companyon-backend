@@ -22,6 +22,7 @@ func (tag *Tag) GetJSONBody() string {
 		"name": "` + tag.Name + `",
 		"primaryColor": "` + tag.PrimaryColor + `",
 		"secondaryColor": "` + tag.SecondaryColor + `",
+		"public": ` + utils.BoolToString(tag.Public) + `,
 		"enabled": ` + utils.BoolToString(tag.Enabled) + `
 	}`
 	return body

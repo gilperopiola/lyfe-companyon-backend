@@ -7,7 +7,7 @@ import (
 )
 
 func (tag *Tag) Create() (*Tag, error) {
-	result, err := db.DB.Exec(`INSERT INTO tags (name, primaryColor, secondaryColor) VALUES (?, ?, ?)`, tag.Name, tag.PrimaryColor, tag.SecondaryColor)
+	result, err := db.DB.Exec(`INSERT INTO tags (name, primaryColor, secondaryColor, public) VALUES (?, ?, ?, ?)`, tag.Name, tag.PrimaryColor, tag.SecondaryColor, tag.Public)
 	if err != nil {
 		return &Tag{}, err
 	}
@@ -18,8 +18,8 @@ func (tag *Tag) Create() (*Tag, error) {
 }
 
 func (tag *Tag) Get() (*Tag, error) {
-	if err := db.DB.QueryRow(`SELECT name, primaryColor, secondaryColor, enabled FROM tags WHERE id = ?`, tag.ID).Scan(
-		&tag.Name, &tag.PrimaryColor, &tag.SecondaryColor, &tag.Enabled); err != nil {
+	if err := db.DB.QueryRow(`SELECT name, primaryColor, secondaryColor, public, enabled FROM tags WHERE id = ?`, tag.ID).Scan(
+		&tag.Name, &tag.PrimaryColor, &tag.SecondaryColor, &tag.Public, &tag.Enabled); err != nil {
 		return &Tag{}, err
 	}
 
@@ -27,8 +27,8 @@ func (tag *Tag) Get() (*Tag, error) {
 }
 
 func (tag *Tag) Update() (*Tag, error) {
-	_, err := db.DB.Exec(`UPDATE tags SET name = ?, primaryColor = ?, secondaryColor = ?, enabled = ? WHERE id = ?`,
-		tag.Name, tag.PrimaryColor, tag.SecondaryColor, tag.Enabled, tag.ID)
+	_, err := db.DB.Exec(`UPDATE tags SET name = ?, primaryColor = ?, secondaryColor = ?, public = ?, enabled = ? WHERE id = ?`,
+		tag.Name, tag.PrimaryColor, tag.SecondaryColor, tag.Public, tag.Enabled, tag.ID)
 	if err != nil {
 		return &Tag{}, err
 	}
@@ -56,6 +56,11 @@ func (tag *Tag) Search(params *SearchParameters) ([]*Tag, error) {
 		tempTag, err = tempTag.Get()
 		if err != nil {
 			return []*Tag{}, err
+		}
+
+		//shows only public tags if the param is set
+		if !params.ShowPrivate && !tempTag.Public {
+			continue
 		}
 
 		tags = append(tags, tempTag)

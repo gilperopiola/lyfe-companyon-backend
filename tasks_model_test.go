@@ -117,3 +117,40 @@ func TestSearchTasks(t *testing.T) {
 	assert.Equal(t, "name18", tasks[0].Name)
 	assert.Equal(t, "name17", tasks[1].Name)
 }
+
+func TestSearchTasksHidePrivate(t *testing.T) {
+	cfg.Setup("testing")
+	db.Setup(cfg)
+	defer db.Close()
+
+	tags := createTestingTags(2)
+
+	tags[0].Public = false
+	tags[0].Update()
+
+	task := &Task{}
+	for i := 15; i <= 25; i++ {
+		task = &Task{
+			Name:       "name" + utils.ToString(i),
+			Importance: 10,
+			Tags:       []*Tag{tags[i%2]},
+		}
+		task, _ = task.Create()
+	}
+
+	params := &SearchParameters{
+		Filter:        "name1",
+		SortField:     "id",
+		SortDirection: "DESC",
+		ShowPrivate:   false,
+		Limit:         3,
+		Offset:        1,
+	}
+
+	tasks, err := task.Search(params)
+	assert.NoError(t, err)
+
+	assert.Equal(t, 1, len(tasks))
+	assert.NotZero(t, tasks[0].ID)
+	assert.Equal(t, "name17", tasks[0].Name)
+}

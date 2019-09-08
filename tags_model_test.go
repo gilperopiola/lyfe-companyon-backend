@@ -95,6 +95,7 @@ func TestSearchTags(t *testing.T) {
 		Filter:        "name1",
 		SortField:     "id",
 		SortDirection: "DESC",
+		ShowPrivate:   true,
 		Limit:         3,
 		Offset:        1,
 	}
@@ -118,6 +119,7 @@ func createTestingTags(n int) []*Tag {
 			Name:           "name" + utils.ToString(i),
 			PrimaryColor:   "primaryColor" + utils.ToString(i),
 			SecondaryColor: "secondaryColor" + utils.ToString(i),
+			Public:         true,
 		}
 		tag, _ = tag.Create()
 		tags = append(tags, tag)

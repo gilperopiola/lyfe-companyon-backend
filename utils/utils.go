@@ -16,6 +16,10 @@ func ToInt(s string) int {
 	return val
 }
 
+func ToBool(s string) bool {
+	return s == "true" || s == "1"
+}
+
 func BoolToString(b bool) string {
 	if b {
 		return "true"

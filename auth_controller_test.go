@@ -6,6 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/gilperopiola/lyfe-companyon-backend/utils"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -31,7 +32,7 @@ func TestLoginController(t *testing.T) {
 
 	user := &User{
 		Email:    "email",
-		Password: hash("email", "password"),
+		Password: utils.Hash("email", "password"),
 	}
 	user, _ = user.Create()
 
