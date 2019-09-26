@@ -11,7 +11,6 @@ import (
 
 func initCron() {
 	gocron.Every(1).Day().At("07:00").Do(sendDailyMail)
-	gocron.Every(5).Seconds().Do(sendDailyMail)
 
 	<-gocron.Start()
 }
