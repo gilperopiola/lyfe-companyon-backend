@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/gilperopiola/lyfe-companyon-backend/utils"
 )
@@ -76,8 +75,6 @@ func (task *Task) Search(params *SearchParameters) ([]*Task, error) {
 		if err = rows.Scan(&tempTask.ID); err != nil {
 			return []*Task{}, err
 		}
-
-		log.Printf("%v", tempTask)
 
 		tempTask, err = tempTask.Get()
 		if err != nil {

@@ -32,7 +32,15 @@ func sendDailyMail() {
 
 	dailies, _ := task.Search(params)
 
-	log.Println(len(dailies))
+	params.FilterTagID = 0
+
+	allTasks, _ := task.Search(params)
+	doing := []*Task{}
+	for _, task := range allTasks {
+		if task.Status == Doing {
+			doing = append(doing, task)
+		}
+	}
 
 	dailyElements := ""
 	for i, daily := range dailies {
@@ -44,18 +52,31 @@ func sendDailyMail() {
 		dailyElements += `<p style="background-color: ` + color + `; padding: 8px; margin: 0;">` + daily.Name + `</p>`
 	}
 
-	html := `<html>
-	<head>
-	  <title>Dailies for ` + time.Now().Format("06/01/02") + `</title>
-	</head>
-	<body>` + dailyElements + `
-	  <p style="background-color: black; margin: 0; font-size: 8px">~</p>
-	  <br>
-	</body>
+	doingElements := ""
+	for i, taskDoing := range doing {
+		color := "#e4e4e4"
+		if i%2 == 0 {
+			color = "#c3c3c3"
+		}
+
+		doingElements += `<p style="background-color: ` + color + `; padding: 8px; margin: 0;">` + taskDoing.Name + `</p>`
+	}
+
+	html := `
+	<html>
+		<head>
+	  		<title>Daily - ` + time.Now().Format("06/01/02") + `</title>
+		</head>
+		<body> 
+			<p style="color: white; background-color: black; margin: 0; font-size: 14px; text-align: center">DAILY</p>` +
+		dailyElements + `
+		<p style="color: white; background-color: black; margin: 0; font-size: 14px; text-align: center">DOING</p>` +
+		doingElements + `
+			<p style="background-color: black; margin: 0; font-size: 8px">~</p>
+			<br>
+		</body>
 	</html>
 	`
-
-	log.Println(dailyElements)
 
 	messagesInfo := []mailjet.InfoMessagesV31{
 		mailjet.InfoMessagesV31{
