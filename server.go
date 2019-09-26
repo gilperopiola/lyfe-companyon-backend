@@ -25,6 +25,7 @@ func main() {
 	db.Setup(cfg)
 	defer db.Close()
 	rtr.Setup()
+	go initCron()
 
 	log.Println("server started")
 	rtr.Run(":" + os.Getenv("PORT"))

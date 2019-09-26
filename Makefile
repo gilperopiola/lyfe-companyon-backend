@@ -1,6 +1,6 @@
 all: run
 run:
-	go run server.go router.go common.go auth.go auth_controller.go users.go users_controller.go users_model.go tags.go tags_controller.go tags_model.go tasks.go tasks_controller.go tasks_model.go --env=$(env)
+	go run server.go router.go common.go cron.go auth.go auth_controller.go users.go users_controller.go users_model.go tags.go tags_controller.go tags_model.go tasks.go tasks_controller.go tasks_model.go --env=$(env)
 
 get:
 	go get github.com/gin-gonic/gin \
