@@ -10,7 +10,9 @@ import (
 )
 
 func initCron() {
-	gocron.Every(1).Day().At("07:00").Do(sendDailyMail)
+
+	//you have to take out 3 hours to get the real Argentina time
+	gocron.Every(1).Day().At("10:00").Do(sendDailyMail)
 
 	<-gocron.Start()
 }
@@ -89,8 +91,8 @@ func sendDailyMail() {
 					Name:  "Franco",
 				},
 			},
-			Subject:  "Keonda perro",
-			TextPart: "Acá tamo",
+			Subject:  "Daily - " + time.Now().Format("06/01/02"),
+			TextPart: "Que tengas buen día wachín!",
 			HTMLPart: html,
 			CustomID: "Daily",
 		},
