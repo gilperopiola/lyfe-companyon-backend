@@ -23,7 +23,7 @@ func (task *Task) Create() (*Task, error) {
 }
 
 func (task *Task) Get() (*Task, error) {
-	err := db.DB.QueryRow(`SELECT name, description, importance, status, duration, dueDate, dateCreated FROM tasks WHERE id = ?`, task.ID).Scan(&task.Name, &task.Description, &task.Importance, &task.Status, &task.Duration, &task.DueDate, &task.DateCreated)
+	err := db.DB.QueryRow(`SELECT name, description, importance, status, duration, percentage, dueDate, dateCreated FROM tasks WHERE id = ?`, task.ID).Scan(&task.Name, &task.Description, &task.Importance, &task.Status, &task.Duration, &task.Percentage, &task.DueDate, &task.DateCreated)
 	if err != nil {
 		return &Task{}, err
 	}
@@ -37,7 +37,7 @@ func (task *Task) Get() (*Task, error) {
 }
 
 func (task *Task) Update() (*Task, error) {
-	_, err := db.DB.Exec(`UPDATE tasks SET name = ?, description = ?, importance = ?, status = ?, duration = ?, dueDate = ? WHERE id = ?`, task.Name, task.Description, task.Importance, task.Status, task.Duration, task.DueDate, task.ID)
+	_, err := db.DB.Exec(`UPDATE tasks SET name = ?, description = ?, importance = ?, status = ?, duration = ?, percentage = ?, dueDate = ? WHERE id = ?`, task.Name, task.Description, task.Importance, task.Status, task.Duration, task.Percentage, task.DueDate, task.ID)
 	if err != nil {
 		return &Task{}, err
 	}

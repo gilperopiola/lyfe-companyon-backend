@@ -12,6 +12,7 @@ type Task struct {
 	Importance  int
 	Status      TaskStatus
 	Duration    TaskDuration
+	Percentage  int
 	DueDate     time.Time
 	Tags        []*Tag
 	DateCreated time.Time
