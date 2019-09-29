@@ -37,6 +37,11 @@ func (task *Task) Get() (*Task, error) {
 }
 
 func (task *Task) Update() (*Task, error) {
+
+	if task.Percentage == 100 {
+		task.Status = Done
+	}
+
 	_, err := db.DB.Exec(`UPDATE tasks SET name = ?, description = ?, importance = ?, status = ?, duration = ?, percentage = ?, dueDate = ? WHERE id = ?`, task.Name, task.Description, task.Importance, task.Status, task.Duration, task.Percentage, task.DueDate, task.ID)
 	if err != nil {
 		return &Task{}, err
