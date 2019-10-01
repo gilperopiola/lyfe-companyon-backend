@@ -13,7 +13,7 @@ func initCron() {
 
 	//you have to take out 3 hours to get the real Argentina time
 	gocron.Every(1).Day().At("10:00").Do(sendDailyMail)
-	gocron.Every(1).Second().Do(sendWeeklyDoneMail)
+	gocron.Every(2).Second().Do(sendWeeklyDoneMail)
 
 	<-gocron.Start()
 }
@@ -70,9 +70,9 @@ func sendDailyMail() {
 	  		<title>Daily - ` + time.Now().Format("06/01/02") + `</title>
 		</head>
 		<body> 
-			<p style="color: white; background-color: black; margin: 0; font-size: 14px; text-align: center">DAILY</p>` +
+			<p style="color: white; background-color: black; margin: 0; font-size: 14px; text-align: center; font-weight: bold;">DAILY</p>` +
 		dailyElements + `
-		<p style="color: white; background-color: black; margin: 0; font-size: 14px; text-align: center">DOING</p>` +
+		<p style="color: white; background-color: black; margin: 0; font-size: 14px; text-align: center; font-weight: bold;">DOING</p>` +
 		doingElements + `
 			<p style="background-color: black; margin: 0; font-size: 8px">~</p>
 			<br>
@@ -102,7 +102,7 @@ func sendDailyMail() {
 
 	res, err := mailjetClient.SendMailV31(&messages)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err.Error())
 	}
 
 	fmt.Printf("Data: %+v\n", res)
@@ -140,9 +140,9 @@ func sendWeeklyDoneMail() {
 	  		<title>Weekly - ` + weekAgo.Format("06/01/02") + ` - ` + time.Now().Format("06/01/02") + `</title>
 		</head>
 		<body> 
-			<p style="color: white; background-color: black; margin: 0; font-size: 14px; text-align: center">DAILY</p>` +
+			<p style="color: white; background-color: black; margin: 0; font-size: 14px; text-align: center; font-weight: bold;">DONE</p>` +
 		doneElements + `
-		<p style="color: white; background-color: black; margin: 0; font-size: 14px; text-align: center">DOING</p>` +
+		<p style="color: white; background-color: black; margin: 0; font-size: 14px; text-align: center; font-weight: bold;">ARCHIVED</p>` +
 		archivedElements + `
 			<p style="background-color: black; margin: 0; font-size: 8px">~</p>
 			<br>
@@ -172,7 +172,7 @@ func sendWeeklyDoneMail() {
 
 	res, err := mailjetClient.SendMailV31(&messages)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err.Error())
 	}
 
 	fmt.Printf("Data: %+v\n", res)
