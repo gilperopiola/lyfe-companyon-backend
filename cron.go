@@ -13,7 +13,7 @@ func initCron() {
 
 	//you have to take out 3 hours to get the real Argentina time
 	gocron.Every(1).Day().At("10:00").Do(sendDailyMail)
-	//gocron.Every(1).Second().Do(sendWeeklyDoneMail)
+	gocron.Every(1).Second().Do(sendWeeklyDoneMail)
 
 	<-gocron.Start()
 }

@@ -132,7 +132,7 @@ func (task *Task) Search(params *SearchParameters) ([]*Task, error) {
 }
 
 func (task *Task) GetDoneAndArchivedSince(date time.Time) ([]*Task, error) {
-	rows, err := db.DB.Query(`SELECT id FROM tasks WHERE (status = ? OR status = ?)`, Done, Archived)
+	rows, err := db.DB.Query(`SELECT id FROM tasks WHERE (status = ? OR status = ?) AND dateFinished BETWEEN ? AND ?`, Done, Archived, date, time.Now())
 	defer rows.Close()
 	if err != nil {
 		return []*Task{}, err
