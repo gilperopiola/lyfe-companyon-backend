@@ -13,6 +13,7 @@ func initCron() {
 
 	//you have to take out 3 hours to get the real Argentina time
 	gocron.Every(1).Day().At("10:00").Do(sendDailyMail)
+	//gocron.Every(1).Second().Do(sendWeeklyDoneMail)
 
 	<-gocron.Start()
 }
@@ -95,6 +96,76 @@ func sendDailyMail() {
 			TextPart: "Que tengas buen día wachín!",
 			HTMLPart: html,
 			CustomID: "Daily",
+		},
+	}
+	messages := mailjet.MessagesV31{Info: messagesInfo}
+
+	res, err := mailjetClient.SendMailV31(&messages)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("Data: %+v\n", res)
+}
+
+func sendWeeklyDoneMail() {
+	//todo config
+	mailjetClient := mailjet.NewMailjetClient("82a01557701a0dd9f319df7c84418785", "151f081f1debe5f691ac6b0cc6caa8eb")
+
+	task := &Task{}
+	weekAgo := time.Now().Add(-24 * 7 * time.Hour)
+	doneAndArchived, _ := task.GetDoneAndArchivedSince(weekAgo)
+
+	doneElements := ""
+	archivedElements := ""
+
+	for i, task := range doneAndArchived {
+		color := "#e4e4e4"
+		if i%2 == 0 {
+			color = "#c3c3c3"
+		}
+
+		if task.Status == Done {
+			doneElements += `<p style="background-color: ` + color + `; padding: 8px; margin: 0;">` + task.Name + `</p>`
+		}
+
+		if task.Status == Done {
+			archivedElements += `<p style="background-color: ` + color + `; padding: 8px; margin: 0;">` + task.Name + `</p>`
+		}
+	}
+
+	html := `
+	<html>
+		<head>
+	  		<title>Weekly - ` + weekAgo.Format("06/01/02") + ` - ` + time.Now().Format("06/01/02") + `</title>
+		</head>
+		<body> 
+			<p style="color: white; background-color: black; margin: 0; font-size: 14px; text-align: center">DAILY</p>` +
+		doneElements + `
+		<p style="color: white; background-color: black; margin: 0; font-size: 14px; text-align: center">DOING</p>` +
+		archivedElements + `
+			<p style="background-color: black; margin: 0; font-size: 8px">~</p>
+			<br>
+		</body>
+	</html>
+	`
+
+	messagesInfo := []mailjet.InfoMessagesV31{
+		mailjet.InfoMessagesV31{
+			From: &mailjet.RecipientV31{
+				Email: "lucfran2005@hotmail.com",
+				Name:  "Franco",
+			},
+			To: &mailjet.RecipientsV31{
+				mailjet.RecipientV31{
+					Email: "ferra.main@gmail.com",
+					Name:  "Franco",
+				},
+			},
+			Subject:  `Weekly - ` + weekAgo.Format("06/01/02") + ` - ` + time.Now().Format("06/01/02"),
+			TextPart: "Que tengas buena semana wachín!",
+			HTMLPart: html,
+			CustomID: "Weekly",
 		},
 	}
 	messages := mailjet.MessagesV31{Info: messagesInfo}

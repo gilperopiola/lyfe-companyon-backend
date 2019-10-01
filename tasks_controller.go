@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gilperopiola/lyfe-companyon-backend/utils"
 	"github.com/gin-gonic/gin"
@@ -73,6 +74,18 @@ func SearchTasks(c *gin.Context) {
 	}
 
 	tasks, err := task.Search(params)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, db.BeautifyError(err))
+		return
+	}
+
+	c.JSON(http.StatusOK, tasks)
+}
+
+func GetWeeklyDoneAndArchivedTasks(c *gin.Context) {
+	task := &Task{}
+
+	tasks, err := task.GetDoneAndArchivedSince(time.Now().Add(-24 * 7 * time.Hour))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, db.BeautifyError(err))
 		return

@@ -58,4 +58,9 @@ func (router *MyRouter) Setup() {
 		tasks.PUT("/:id_task/Complete", CompleteTask)
 		tasks.PUT("/:id_task/Archive", ArchiveTask)
 	}
+
+	history := router.Group("/History", validateToken())
+	{
+		history.GET("/Week", GetWeeklyDoneAndArchivedTasks)
+	}
 }

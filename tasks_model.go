@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/gilperopiola/lyfe-companyon-backend/utils"
 )
@@ -23,7 +24,7 @@ func (task *Task) Create() (*Task, error) {
 }
 
 func (task *Task) Get() (*Task, error) {
-	err := db.DB.QueryRow(`SELECT name, description, importance, status, duration, percentage, dueDate, dateCreated FROM tasks WHERE id = ?`, task.ID).Scan(&task.Name, &task.Description, &task.Importance, &task.Status, &task.Duration, &task.Percentage, &task.DueDate, &task.DateCreated)
+	err := db.DB.QueryRow(`SELECT name, description, importance, status, duration, percentage, dueDate, dateCreated, dateFinished FROM tasks WHERE id = ?`, task.ID).Scan(&task.Name, &task.Description, &task.Importance, &task.Status, &task.Duration, &task.Percentage, &task.DueDate, &task.DateCreated, &task.DateFinished)
 	if err != nil {
 		return &Task{}, err
 	}
@@ -42,7 +43,11 @@ func (task *Task) Update() (*Task, error) {
 		task.Status = Done
 	}
 
-	_, err := db.DB.Exec(`UPDATE tasks SET name = ?, description = ?, importance = ?, status = ?, duration = ?, percentage = ?, dueDate = ? WHERE id = ?`, task.Name, task.Description, task.Importance, task.Status, task.Duration, task.Percentage, task.DueDate, task.ID)
+	if task.Status == Done || task.Status == Archived {
+		task.DateFinished = time.Now()
+	}
+
+	_, err := db.DB.Exec(`UPDATE tasks SET name = ?, description = ?, importance = ?, status = ?, duration = ?, percentage = ?, dueDate = ?, dateFinished = ? WHERE id = ?`, task.Name, task.Description, task.Importance, task.Status, task.Duration, task.Percentage, task.DueDate, task.DateFinished, task.ID)
 	if err != nil {
 		return &Task{}, err
 	}
@@ -56,7 +61,12 @@ func (task *Task) Update() (*Task, error) {
 }
 
 func (task *Task) UpdateStatus() (*Task, error) {
-	_, err := db.DB.Exec(`UPDATE tasks SET status = ? WHERE id = ?`, task.Status, task.ID)
+
+	if task.Status == Done || task.Status == Archived {
+		task.DateFinished = time.Now()
+	}
+
+	_, err := db.DB.Exec(`UPDATE tasks SET status = ?, dateFinished = ? WHERE id = ?`, task.Status, task.DateFinished, task.ID)
 	if err != nil {
 		return &Task{}, err
 	}
@@ -116,6 +126,31 @@ func (task *Task) Search(params *SearchParameters) ([]*Task, error) {
 		if hasRequiredTag(tempTask.Tags, params.FilterTagID) && hasRequiredPrivacy(tempTask.Tags, params.ShowPrivate) {
 			tasks = append(tasks, tempTask)
 		}
+	}
+
+	return tasks, nil
+}
+
+func (task *Task) GetDoneAndArchivedSince(date time.Time) ([]*Task, error) {
+	rows, err := db.DB.Query(`SELECT id FROM tasks WHERE (status = ? OR status = ?)`, Done, Archived)
+	defer rows.Close()
+	if err != nil {
+		return []*Task{}, err
+	}
+
+	tasks := []*Task{}
+	for rows.Next() {
+		tempTask := &Task{}
+		if err = rows.Scan(&tempTask.ID); err != nil {
+			return []*Task{}, err
+		}
+
+		tempTask, err = tempTask.Get()
+		if err != nil {
+			return []*Task{}, err
+		}
+
+		tasks = append(tasks, tempTask)
 	}
 
 	return tasks, nil

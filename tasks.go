@@ -6,16 +6,17 @@ import (
 )
 
 type Task struct {
-	ID          int
-	Name        string
-	Description string
-	Importance  int
-	Status      TaskStatus
-	Duration    TaskDuration
-	Percentage  int
-	DueDate     time.Time
-	Tags        []*Tag
-	DateCreated time.Time
+	ID           int
+	Name         string
+	Description  string
+	Importance   int
+	Status       TaskStatus
+	Duration     TaskDuration
+	Percentage   int
+	DueDate      time.Time
+	Tags         []*Tag
+	DateCreated  time.Time
+	DateFinished time.Time
 }
 
 type TaskActions interface {
