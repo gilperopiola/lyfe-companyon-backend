@@ -62,5 +62,6 @@ func (router *MyRouter) Setup() {
 	history := router.Group("/History", validateToken())
 	{
 		history.GET("/Week", GetWeeklyDoneAndArchivedTasks)
+		history.GET("/Month", GetMonthlyDoneAndArchivedTasks)
 	}
 }
