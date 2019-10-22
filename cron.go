@@ -12,7 +12,7 @@ import (
 func initCron() {
 
 	//you have to take out 3 hours to get the real Argentina time
-	gocron.Every(1).Day().At("10:00").Do(sendDailyMail)
+	gocron.Every(1).Second().At("10:00").Do(sendDailyMail)
 	gocron.Every(1).Sunday().At("13:00").Do(sendWeeklyDoneMail)
 
 	<-gocron.Start()
@@ -44,6 +44,8 @@ func sendDailyMail() {
 		}
 	}
 
+	doneYesterday, _ := task.GetDoneAndArchivedSince(time.Now().AddDate(0, 0, 1))
+
 	dailyElements := ""
 	for i, daily := range dailies {
 		color := "#e4e4e4"
@@ -64,16 +66,30 @@ func sendDailyMail() {
 		doingElements += `<p style="background-color: ` + color + `; padding: 8px; margin: 0;">` + taskDoing.Name + `</p>`
 	}
 
+	doneYesterdayElements := ""
+	for i, taskDone := range doneYesterday {
+		color := "#e4e4e4"
+		if i%2 == 0 {
+			color = "#c3c3c3"
+		}
+
+		doingElements += `<p style="background-color: ` + color + `; padding: 8px; margin: 0;">` + taskDone.Name + `</p>`
+	}
+
 	html := `
 	<html>
 		<head>
 	  		<title>Daily - ` + time.Now().Format("06/01/02") + `</title>
 		</head>
+
 		<body> 
 			<p style="color: white; background-color: black; margin: 0; font-size: 14px; text-align: center; font-weight: bold;">DAILY</p>` +
 		dailyElements + `
-		<p style="color: white; background-color: black; margin: 0; font-size: 14px; text-align: center; font-weight: bold;">DOING</p>` +
+			<p style="color: white; background-color: black; margin: 0; font-size: 14px; text-align: center; font-weight: bold;">DOING</p>` +
 		doingElements + `
+			<p style="color: white; background-color: black; margin: 0; font-size: 14px; text-align: center; font-weight: bold;">DONE / ARCHIVED YESTERDAY</p>` +
+		doneYesterdayElements + `
+
 			<p style="background-color: black; margin: 0; font-size: 8px">~</p>
 			<br>
 		</body>
