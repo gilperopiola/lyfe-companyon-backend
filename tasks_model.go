@@ -156,7 +156,7 @@ func (task *Task) GetDoneAndArchivedSince(date time.Time) ([]*Task, error) {
 	return tasks, nil
 }
 
-func (task *Task) GetAddedSince(date Time.time) ([]*Task, error) {
+func (task *Task) GetAddedSince(date time.Time) ([]*Task, error) {
 	rows, err := db.DB.Query(`SELECT id FROM tasks WHERE dateCreated BETWEEN ? AND ? ORDER BY dateCreated ASC`, date, time.Now())
 	defer rows.Close()
 	if err != nil {
