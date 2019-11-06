@@ -37,7 +37,7 @@ func (tag *Tag) Update() (*Tag, error) {
 }
 
 func (tag *Tag) Search(params *SearchParameters) ([]*Tag, error) {
-	query := fmt.Sprintf(`SELECT id FROM tags WHERE id LIKE ? OR name LIKE ? ORDER BY %s LIMIT ? OFFSET ?`, getSearchOrderBy(params))
+	query := fmt.Sprintf(`SELECT id FROM tags WHERE (id LIKE ? OR name LIKE ?) AND enabled = true ORDER BY %s LIMIT ? OFFSET ?`, getSearchOrderBy(params))
 
 	params.Filter = "%" + params.Filter + "%"
 	rows, err := db.DB.Query(query, params.Filter, params.Filter, params.Limit, params.Offset)
