@@ -3,10 +3,13 @@ package main
 import (
 	"time"
 
+	connect "github.com/gilperopiola/gilperopiola-ms-connect"
 	"github.com/jasonlvhit/gocron"
 )
 
 func initCron() {
+	sendDailyMail()
+
 	//you have to take out 3 hours to get the real Argentina time
 	gocron.Every(1).Day().At("10:00").Do(sendDailyMail)
 	gocron.Every(1).Sunday().At("13:00").Do(sendWeeklyDoneMail)
@@ -14,9 +17,9 @@ func initCron() {
 	<-gocron.Start()
 }
 
-func createMailRow(text string, backgroundColor string, foregroundColor string, title bool) string {
+func createMailRow(text string, backgroundColor string, foregroundColor string, isTitle bool) string {
 	titleCSS := ""
-	if title != "" {
+	if !isTitle {
 		titleCSS = " font-weight: bold; font-size: 16px; text-align: center;"
 	}
 
@@ -72,7 +75,7 @@ func sendDailyMail() {
 	}
 
 	//send mail
-	subject := "Daily - " + time.Now().Weekday() + " " + time.Now().Format("06/01/02")
+	subject := "Daily - " + time.Now().Weekday().String() + " " + time.Now().Format("06/01/02")
 
 	html := `
 	<html>
@@ -111,7 +114,7 @@ func sendWeeklyDoneMail() {
 	}
 
 	//send mail
-	subject := "Weekly - " + time.Now().Weekday() + " " + time.Now().Format("06/01/02")
+	subject := "Weekly - " + time.Now().Weekday().String() + " " + time.Now().Format("06/01/02")
 
 	html := `
 	<html>
