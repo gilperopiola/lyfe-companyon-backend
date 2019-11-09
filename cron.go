@@ -18,12 +18,11 @@ func initCron() {
 }
 
 func createMailRow(text string, backgroundColor string, foregroundColor string, isTitle bool) string {
-	titleCSS := ""
-	if !isTitle {
-		titleCSS = " font-weight: bold; font-size: 16px; text-align: center;"
+	if isTitle {
+		return `<p style="font-size: 32px; font-weight: bold; text-align: center; background-color: ` + backgroundColor + ` color: ` + foregroundColor + `; padding: 12px; margin: 0;">` + text + `</p>`
 	}
 
-	return `<p style="background-color: ` + backgroundColor + ` color: ` + foregroundColor + `; padding: 8px; margin: 0;` + titleCSS + `">` + text + `</p>`
+	return `<p style="font-size: 16px; background-color: ` + backgroundColor + ` color: ` + foregroundColor + `; padding: 8px; margin: 0;">` + text + `</p>`
 }
 
 func sendDailyMail() {
@@ -56,22 +55,22 @@ func sendDailyMail() {
 	//prepare elements
 	dailyElements := ""
 	for _, daily := range dailies {
-		dailyElements += createMailRow(daily.Name, "gray", "black", false)
+		dailyElements += createMailRow(daily.Name, "black", "white", false)
 	}
 
 	doingElements := ""
 	for _, taskDoing := range doing {
-		doingElements += createMailRow(taskDoing.Name, "gray", "black", false)
+		doingElements += createMailRow(taskDoing.Name, "black", "white", false)
 	}
 
 	doneYesterdayElements := ""
 	for _, taskDone := range doneYesterday {
-		doneYesterdayElements += createMailRow(taskDone.Name, "gray", "black", false)
+		doneYesterdayElements += createMailRow(taskDone.Name, "black", "white", false)
 	}
 
 	addedYesterdayElements := ""
 	for _, taskAdded := range addedYesterday {
-		addedYesterdayElements += createMailRow(taskAdded.Name, "gray", "black", false)
+		addedYesterdayElements += createMailRow(taskAdded.Name, "black", "white", false)
 	}
 
 	//send mail
@@ -81,10 +80,10 @@ func sendDailyMail() {
 	<html>
 		<body> ` +
 
-		createMailRow("DAILY", "black", "white", true) + dailyElements +
-		createMailRow("DOING", "black", "white", true) + doingElements +
-		createMailRow("DONE / ARCHIVED YESTERDAY", "black", "white", true) + doneYesterdayElements +
-		createMailRow("ADDED YESTERDAY", "black", "white", true) + addedYesterdayElements + `
+		createMailRow("DAILY", "#511480", "white", true) + dailyElements +
+		createMailRow("DOING", "#511480", "white", true) + doingElements +
+		createMailRow("DONE / ARCHIVED YESTERDAY", "#511480", "white", true) + doneYesterdayElements +
+		createMailRow("ADDED YESTERDAY", "#511480", "white", true) + addedYesterdayElements + `
 
 			<p style="background-color: black; margin: 0; font-size: 8px">~</p>
 			<br>
