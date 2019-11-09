@@ -106,6 +106,18 @@ func GetMonthlyDoneAndArchivedTasks(c *gin.Context) {
 	c.JSON(http.StatusOK, tasks)
 }
 
+func SetTaskDoing(c *gin.Context) {
+	task := &Task{ID: utils.ToInt(c.Param("id_task")), Status: Doing}
+
+	task, err := task.UpdateStatus()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, db.BeautifyError(err))
+		return
+	}
+
+	c.JSON(http.StatusOK, task)
+}
+
 func CompleteTask(c *gin.Context) {
 	task := &Task{ID: utils.ToInt(c.Param("id_task")), Status: Done}
 
