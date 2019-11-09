@@ -1,8 +1,11 @@
 package main
 
 import (
+	"log"
+	"strings"
 	"time"
 
+	"github.com/gilperopiola/frutils"
 	connect "github.com/gilperopiola/gilperopiola-ms-connect"
 	"github.com/jasonlvhit/gocron"
 )
@@ -19,10 +22,10 @@ func initCron() {
 
 func createMailRow(text string, backgroundColor string, foregroundColor string, isTitle bool) string {
 	if isTitle {
-		return `<p style="font-size: 32px; font-weight: bold; text-align: center; background-color: ` + backgroundColor + ` color: ` + foregroundColor + `; padding: 12px; margin: 0;">` + text + `</p>`
+		return `<p style='font-size: 32px; font-weight: bold; text-align: center; background-color: ` + backgroundColor + `; color: ` + foregroundColor + `; padding: 12px; margin: 0;'>` + text + `</p>`
 	}
 
-	return `<p style="font-size: 16px; background-color: ` + backgroundColor + ` color: ` + foregroundColor + `; padding: 8px; margin: 0;">` + text + `</p>`
+	return `<p style='font-size: 16px; background-color: ` + backgroundColor + `; color: ` + foregroundColor + `; padding: 8px; margin: 0;'>` + text + `</p>`
 }
 
 func sendDailyMail() {
@@ -85,13 +88,13 @@ func sendDailyMail() {
 		createMailRow("DONE / ARCHIVED YESTERDAY", "#511480", "white", true) + doneYesterdayElements +
 		createMailRow("ADDED YESTERDAY", "#511480", "white", true) + addedYesterdayElements + `
 
-			<p style="background-color: black; margin: 0; font-size: 8px">~</p>
+			<p style='background-color: black; margin: 0; font-size: 8px'>~</p>
 			<br>
 		</body>
-	</html>
-	`
+	</html>`
 
-	connect.SendMail("ferra.main@gmail.com", subject, "", html)
+	status, response := connect.SendMail("ferra.main@gmail.com", subject, "", strings.Replace(strings.Replace(html, "\n", "", -1), "\t", "", -1))
+	log.Println(frutils.ToString(status) + ": " + response)
 }
 
 func sendWeeklyDoneMail() {
@@ -125,8 +128,8 @@ func sendWeeklyDoneMail() {
 		<p style="background-color: black; margin: 0; font-size: 8px">~</p>
 		<br>
 		</body>
-	</html>
-	`
+	</html>`
 
-	connect.SendMail("ferra.main@gmail.com", subject, "", html)
+	status, response := connect.SendMail("ferra.main@gmail.com", subject, "", strings.Replace(strings.Replace(html, "\n", "", -1), "\t", "", -1))
+	log.Println(frutils.ToString(status) + ": " + response)
 }
