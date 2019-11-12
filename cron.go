@@ -166,7 +166,7 @@ func sendWeeklyMail() {
 		createMailRow("DONE THIS WEEK", "#b9c217", "white", true) + doneElements +
 		createMailRow("ARCHIVED THIS WEEK", "#b9c217", "white", true) + archivedElements + `
 
-		<p style="background-color: black; margin: 0; font-size: 8px">~</p>
+		<p style='background-color: black; margin: 0; font-size: 8px'>~</p>
 		<br>
 		</body>
 	</html>`
