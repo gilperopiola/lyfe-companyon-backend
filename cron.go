@@ -39,8 +39,8 @@ func sendDailyMail() {
 		Offset:           0,
 	}
 
-	periodicals := connect.GetPeriodicalsExpiringToday()
-	log.Println(frutils.ToString(len(periodicals)))
+	periodicalsExpiringToday, _ := connect.GetPeriodicalsExpiringToday()
+	periodicalsDoneYesterday, _ := connect.GetPeriodicalsDoneYesterday()
 
 	dailies, _ := task.Search(params)
 
@@ -79,6 +79,16 @@ func sendDailyMail() {
 		addedYesterdayElements += createMailRow(taskAdded.Name, "black", "white", false)
 	}
 
+	periodicalsTodayElements := ""
+	for _, periodical := range periodicalsExpiringToday {
+		periodicalsTodayElements += createMailRow(periodical.Name, "black", "white", false)
+	}
+
+	periodicalsYesterdayElements := ""
+	for _, periodical := range periodicalsDoneYesterday {
+		periodicalsYesterdayElements += createMailRow(periodical.Name, "black", "white", false)
+	}
+
 	//send mail
 	subject := "Daily - " + time.Now().Weekday().String() + " " + time.Now().Format("06/01/02")
 
@@ -89,7 +99,9 @@ func sendDailyMail() {
 		createMailRow("DAILY", "#511480", "white", true) + dailyElements +
 		createMailRow("DOING", "#511480", "white", true) + doingElements +
 		createMailRow("DONE / ARCHIVED YESTERDAY", "#511480", "white", true) + doneYesterdayElements +
-		createMailRow("ADDED YESTERDAY", "#511480", "white", true) + addedYesterdayElements + `
+		createMailRow("ADDED YESTERDAY", "#511480", "white", true) + addedYesterdayElements +
+		createMailRow("PERIODICALS TO DO TODAY", "#b9c217", "white", true) + periodicalsTodayElements +
+		createMailRow("PERIODICALS DONE YESTERDAY", "#b9c217", "white", true) + periodicalsYesterdayElements + `
 
 			<p style='background-color: black; margin: 0; font-size: 8px'>~</p>
 			<br>
