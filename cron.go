@@ -12,6 +12,7 @@ import (
 
 func initCron() {
 	sendDailyMail()
+	sendWeeklyMail()
 
 	//you have to take out 3 hours to get the real Argentina time
 	gocron.Every(1).Day().At("10:00").Do(sendDailyMail)
@@ -121,11 +122,28 @@ func sendDailyMail() {
 
 func sendWeeklyDoneMail() {
 	task := &Task{}
+
+	//weeklies
+	params := &SearchParameters{
+		FilterTagID:      2,
+		FilterImportance: 1,
+		ShowPrivate:      true,
+		Limit:            1000,
+		Offset:           0,
+	}
+	weeklies, _ := task.Search(params)
+
+	//last week
 	weekAgo := time.Now().Add(-24 * 7 * time.Hour)
 	doneAndArchived, _ := task.GetDoneAndArchivedSince(weekAgo)
 
+	weeklyElements := ""
 	doneElements := ""
 	archivedElements := ""
+
+	for i, weeklyTask := range weeklies {
+		weeklyElements += createMailRow(weeklyTask.Name, getRowColor(i), "white", false)
+	}
 
 	for _, task := range doneAndArchived {
 		if task.Status == Done {
@@ -144,8 +162,9 @@ func sendWeeklyDoneMail() {
 	<html>
 		<body> ` +
 
-		createMailRow("DONE", "black", "white", true) + doneElements +
-		createMailRow("ARCHIVED", "black", "white", true) + archivedElements + `
+		createMailRow("TO DO THIS WEEK", "#511480", "white", true) + weeklyElements +
+		createMailRow("DONE THIS WEEK", "#b9c217", "white", true) + doneElements +
+		createMailRow("ARCHIVED THIS WEEK", "#b9c217", "white", true) + archivedElements + `
 
 		<p style="background-color: black; margin: 0; font-size: 8px">~</p>
 		<br>
