@@ -39,6 +39,9 @@ func sendDailyMail() {
 		Offset:           0,
 	}
 
+	periodicals := connect.GetPeriodicalsExpiringToday()
+	log.Println(frutils.ToString(len(periodicals)))
+
 	dailies, _ := task.Search(params)
 
 	//get doing
