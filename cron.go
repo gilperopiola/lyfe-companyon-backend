@@ -28,6 +28,13 @@ func createMailRow(text string, backgroundColor string, foregroundColor string, 
 	return `<p style='font-size: 16px; background-color: ` + backgroundColor + `; color: ` + foregroundColor + `; padding: 8px; margin: 0;'>` + text + `</p>`
 }
 
+func getRowColor(i int) string {
+	if i%2 == 0 {
+		return "#292929"
+	}
+	return "black"
+}
+
 func sendDailyMail() {
 	//get dailies
 	task := &Task{}
@@ -60,33 +67,33 @@ func sendDailyMail() {
 
 	//prepare elements
 	dailyElements := ""
-	for _, daily := range dailies {
-		dailyElements += createMailRow(daily.Name, "black", "white", false)
+	for i, daily := range dailies {
+		dailyElements += createMailRow(daily.Name, getRowColor(i), "white", false)
 	}
 
 	doingElements := ""
-	for _, taskDoing := range doing {
-		doingElements += createMailRow(taskDoing.Name, "black", "white", false)
+	for i, taskDoing := range doing {
+		doingElements += createMailRow(taskDoing.Name, getRowColor(i), "white", false)
 	}
 
 	doneYesterdayElements := ""
-	for _, taskDone := range doneYesterday {
-		doneYesterdayElements += createMailRow(taskDone.Name, "black", "white", false)
+	for i, taskDone := range doneYesterday {
+		doneYesterdayElements += createMailRow(taskDone.Name, getRowColor(i), "white", false)
 	}
 
 	addedYesterdayElements := ""
-	for _, taskAdded := range addedYesterday {
-		addedYesterdayElements += createMailRow(taskAdded.Name, "black", "white", false)
+	for i, taskAdded := range addedYesterday {
+		addedYesterdayElements += createMailRow(taskAdded.Name, getRowColor(i), "white", false)
 	}
 
 	periodicalsTodayElements := ""
-	for _, periodical := range periodicalsExpiringToday {
-		periodicalsTodayElements += createMailRow(periodical.Name, "black", "white", false)
+	for i, periodical := range periodicalsExpiringToday {
+		periodicalsTodayElements += createMailRow(periodical.Name, getRowColor(i), "white", false)
 	}
 
 	periodicalsYesterdayElements := ""
-	for _, periodical := range periodicalsDoneYesterday {
-		periodicalsYesterdayElements += createMailRow(periodical.Name, "black", "white", false)
+	for i, periodical := range periodicalsDoneYesterday {
+		periodicalsYesterdayElements += createMailRow(periodical.Name, getRowColor(i), "white", false)
 	}
 
 	//send mail
