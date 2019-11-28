@@ -69,22 +69,22 @@ func sendDailyMail() {
 	//prepare elements
 	dailyElements := ""
 	for i, daily := range dailies {
-		dailyElements += createMailRow(daily.Name, getRowColor(i), "white", false)
+		dailyElements += createMailRow(frutils.ToString(daily.ID) + " " + daily.Name, getRowColor(i), "white", false)
 	}
 
 	doingElements := ""
 	for i, taskDoing := range doing {
-		doingElements += createMailRow(taskDoing.Name, getRowColor(i), "white", false)
+		doingElements += createMailRow(frutils.ToString(taskDoing.ID) + " " + taskDoing.Name, getRowColor(i), "white", false)
 	}
 
 	doneYesterdayElements := ""
 	for i, taskDone := range doneYesterday {
-		doneYesterdayElements += createMailRow(taskDone.Name, getRowColor(i), "white", false)
+		doneYesterdayElements += createMailRow(frutils.ToString(taskDone.ID) + " " + taskDone.Name, getRowColor(i), "white", false)
 	}
 
 	addedYesterdayElements := ""
 	for i, taskAdded := range addedYesterday {
-		addedYesterdayElements += createMailRow(taskAdded.Name, getRowColor(i), "white", false)
+		addedYesterdayElements += createMailRow(frutils.ToString(taskAdded.ID) + " " + taskAdded.Name, getRowColor(i), "white", false)
 	}
 
 	periodicalsTodayElements := ""
