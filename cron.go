@@ -177,9 +177,15 @@ func sendWeeklyMail() {
 
 	cmd := exec.Command("make", "run")
 	cmd.Dir = "gilperopiola-database-backup-tool"
-	cmd.Output()
+	_, err := cmd.Output()
+	if err != nil {
+		log.Println(err.Error())
+	}
 
 	cmd2 := exec.Command("make", "clean")
 	cmd2.Dir = "gilperopiola-database-backup-tool"
-	cmd2.Output()
+	_, err = cmd2.Output()
+	if err != nil {
+		log.Println(err.Error())
+	}
 }
