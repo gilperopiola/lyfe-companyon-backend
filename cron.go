@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os/exec"
 	"strings"
 	"time"
 
@@ -69,22 +70,22 @@ func sendDailyMail() {
 	//prepare elements
 	dailyElements := ""
 	for i, daily := range dailies {
-		dailyElements += createMailRow(frutils.ToString(daily.ID) + " " + daily.Name, getRowColor(i), "white", false)
+		dailyElements += createMailRow(frutils.ToString(daily.ID)+" "+daily.Name, getRowColor(i), "white", false)
 	}
 
 	doingElements := ""
 	for i, taskDoing := range doing {
-		doingElements += createMailRow(frutils.ToString(taskDoing.ID) + " " + taskDoing.Name, getRowColor(i), "white", false)
+		doingElements += createMailRow(frutils.ToString(taskDoing.ID)+" "+taskDoing.Name, getRowColor(i), "white", false)
 	}
 
 	doneYesterdayElements := ""
 	for i, taskDone := range doneYesterday {
-		doneYesterdayElements += createMailRow(frutils.ToString(taskDone.ID) + " " + taskDone.Name, getRowColor(i), "white", false)
+		doneYesterdayElements += createMailRow(frutils.ToString(taskDone.ID)+" "+taskDone.Name, getRowColor(i), "white", false)
 	}
 
 	addedYesterdayElements := ""
 	for i, taskAdded := range addedYesterday {
-		addedYesterdayElements += createMailRow(frutils.ToString(taskAdded.ID) + " " + taskAdded.Name, getRowColor(i), "white", false)
+		addedYesterdayElements += createMailRow(frutils.ToString(taskAdded.ID)+" "+taskAdded.Name, getRowColor(i), "white", false)
 	}
 
 	periodicalsTodayElements := ""
@@ -173,4 +174,12 @@ func sendWeeklyMail() {
 
 	status, response := connect.SendMail("ferra.main@gmail.com", subject, "", strings.Replace(strings.Replace(html, "\n", "", -1), "\t", "", -1))
 	log.Println(frutils.ToString(status) + ": " + response)
+
+	cmd := exec.Command("make", "run")
+	cmd.Dir = "gilperopiola-database-backup-tool"
+	cmd.Output()
+
+	cmd2 := exec.Command("make", "clean")
+	cmd2.Dir = "gilperopiola-database-backup-tool"
+	cmd2.Output()
 }
