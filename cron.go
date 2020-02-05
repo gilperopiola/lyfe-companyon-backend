@@ -37,6 +37,11 @@ func getRowColor(i int) string {
 }
 
 func sendDailyMail() {
+
+	/*------------------------*/
+	/* PART 1: INFO RETRIEVAL */
+	/*------------------------*/
+
 	//get dailies
 	task := &Task{}
 	params := &SearchParameters{
@@ -66,26 +71,41 @@ func sendDailyMail() {
 	doneYesterday, _ := task.GetDoneAndArchivedSince(time.Now().AddDate(0, 0, -1))
 	addedYesterday, _ := task.GetAddedSince(time.Now().AddDate(0, 0, -1))
 
-	//prepare elements
+	//get entities
+	problemEntities, _ := connect.GetEntitiesOfKind("Problems")
+	axiomEntities, _ := connect.GetEntitiesOfKind("Supuestos")
+	errorEntities, _ := connect.GetEntitiesOfKind("Errores")
+	knowledgeEntities, _ := connect.GetEntitiesOfKind("Knowledge")
+
+	/*------------------------*/
+	/*  PART 2: PREPARATION   */
+	/*------------------------*/
+
 	dailyElements := ""
 	for i, daily := range dailies {
-		dailyElements += createMailRow(daily.Name, getRowColor(i), "white", false)
+		elapsed := frutils.ToString(frutils.GetDaysBetween(daily.DateCreated, time.Now()))
+		dailyElements += createMailRow(daily.Name+" / "+elapsed, getRowColor(i), "white", false)
 	}
 
 	doingElements := ""
 	for i, taskDoing := range doing {
-		doingElements += createMailRow(taskDoing.Name, getRowColor(i), "white", false)
+		elapsed := frutils.ToString(frutils.GetDaysBetween(taskDoing.DateCreated, time.Now()))
+		doingElements += createMailRow(taskDoing.Name+" / "+elapsed, getRowColor(i), "white", false)
 	}
 
 	doneYesterdayElements := ""
 	for i, taskDone := range doneYesterday {
-		doneYesterdayElements += createMailRow(taskDone.Name, getRowColor(i), "white", false)
+		elapsed := frutils.ToString(frutils.GetDaysBetween(taskDone.DateCreated, time.Now()))
+		doneYesterdayElements += createMailRow(taskDone.Name+" / "+elapsed, getRowColor(i), "white", false)
 	}
 
 	addedYesterdayElements := ""
 	for i, taskAdded := range addedYesterday {
-		addedYesterdayElements += createMailRow(taskAdded.Name, getRowColor(i), "white", false)
+		elapsed := frutils.ToString(frutils.GetDaysBetween(taskAdded.DateCreated, time.Now()))
+		addedYesterdayElements += createMailRow(taskAdded.Name+" / "+elapsed, getRowColor(i), "white", false)
 	}
+
+	// periodicals
 
 	periodicalsTodayElements := ""
 	for i, periodical := range periodicalsExpiringToday {
@@ -97,7 +117,29 @@ func sendDailyMail() {
 		periodicalsYesterdayElements += createMailRow(periodical.Name, getRowColor(i), "white", false)
 	}
 
-	//send mail
+	// entities
+
+	problemEntitiesElements := ""
+	for i, problemEntity := range problemEntities {
+		problemEntitiesElements += createMailRow(problemEntity.Name, getRowColor(i), "white", false)
+	}
+	axiomEntitiesElements := ""
+	for i, axiomEntity := range axiomEntities {
+		axiomEntitiesElements += createMailRow(axiomEntity.Name, getRowColor(i), "white", false)
+	}
+	errorEntitiesElements := ""
+	for i, errorEntity := range errorEntities {
+		errorEntitiesElements += createMailRow(errorEntity.Name, getRowColor(i), "white", false)
+	}
+	knowledgeEntitiesElements := ""
+	for i, knowledgeEntity := range knowledgeEntities {
+		knowledgeEntitiesElements += createMailRow(knowledgeEntity.Name, getRowColor(i), "white", false)
+	}
+
+	/*------------------------*/
+	/*  PART 3: MAIL SENDING  */
+	/*------------------------*/
+
 	subject := "Daily - " + time.Now().Weekday().String() + " " + time.Now().Format("06/01/02")
 
 	html := `
@@ -109,7 +151,11 @@ func sendDailyMail() {
 		createMailRow("DONE / ARCHIVED YESTERDAY", "#511480", "white", true) + doneYesterdayElements +
 		createMailRow("ADDED YESTERDAY", "#511480", "white", true) + addedYesterdayElements +
 		createMailRow("PERIODICALS TO DO TODAY", "#b9c217", "white", true) + periodicalsTodayElements +
-		createMailRow("PERIODICALS DONE YESTERDAY", "#b9c217", "white", true) + periodicalsYesterdayElements + `
+		createMailRow("PERIODICALS DONE YESTERDAY", "#b9c217", "white", true) + periodicalsYesterdayElements +
+		createMailRow("PROBLEMS", "#511480", "white", true) + problemEntitiesElements +
+		createMailRow("SUPUESTOS", "#511480", "white", true) + axiomEntitiesElements +
+		createMailRow("ERRORS", "#511480", "white", true) + errorEntitiesElements +
+		createMailRow("KNOWLEDGE", "#511480", "white", true) + knowledgeEntitiesElements + `
 
 			<p style='background-color: black; margin: 0; font-size: 8px'>~</p>
 			<br>
