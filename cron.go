@@ -72,7 +72,10 @@ func sendDailyMail() {
 	addedYesterday, _ := task.GetAddedSince(time.Now().AddDate(0, 0, -1))
 
 	//get entities
-	problemEntities, _ := connect.GetEntitiesOfKind("Problems")
+	problemEntities, err := connect.GetEntitiesOfKind("Problems")
+	if err != nil {
+		log.Println(err.Error())
+	}
 	axiomEntities, _ := connect.GetEntitiesOfKind("Supuestos")
 	errorEntities, _ := connect.GetEntitiesOfKind("Errores")
 	knowledgeEntities, _ := connect.GetEntitiesOfKind("Knowledge")
