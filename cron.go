@@ -77,32 +77,34 @@ func sendDailyMail() {
 	errorEntities, _ := connect.GetEntitiesOfKind("Errores")
 	knowledgeEntities, _ := connect.GetEntitiesOfKind("Knowledge")
 
+	log.Printf("%v", problemEntities)
+
 	/*------------------------*/
 	/*  PART 2: PREPARATION   */
 	/*------------------------*/
 
 	dailyElements := ""
 	for i, daily := range dailies {
-		elapsed := frutils.ToString(frutils.GetDaysBetween(daily.DateCreated, time.Now()))
-		dailyElements += createMailRow(daily.Name+" / "+elapsed, getRowColor(i), "white", false)
+		elapsed := frutils.ToString(frutils.GetDaysBetween(time.Now(), daily.DateCreated))
+		dailyElements += createMailRow(daily.Name+" > "+elapsed, getRowColor(i), "white", false)
 	}
 
 	doingElements := ""
 	for i, taskDoing := range doing {
-		elapsed := frutils.ToString(frutils.GetDaysBetween(taskDoing.DateCreated, time.Now()))
-		doingElements += createMailRow(taskDoing.Name+" / "+elapsed, getRowColor(i), "white", false)
+		elapsed := frutils.ToString(frutils.GetDaysBetween(time.Now(), taskDoing.DateCreated))
+		doingElements += createMailRow(taskDoing.Name+" > "+elapsed, getRowColor(i), "white", false)
 	}
 
 	doneYesterdayElements := ""
 	for i, taskDone := range doneYesterday {
-		elapsed := frutils.ToString(frutils.GetDaysBetween(taskDone.DateCreated, time.Now()))
-		doneYesterdayElements += createMailRow(taskDone.Name+" / "+elapsed, getRowColor(i), "white", false)
+		elapsed := frutils.ToString(frutils.GetDaysBetween(time.Now(), taskDone.DateCreated))
+		doneYesterdayElements += createMailRow(taskDone.Name+" > "+elapsed, getRowColor(i), "white", false)
 	}
 
 	addedYesterdayElements := ""
 	for i, taskAdded := range addedYesterday {
-		elapsed := frutils.ToString(frutils.GetDaysBetween(taskAdded.DateCreated, time.Now()))
-		addedYesterdayElements += createMailRow(taskAdded.Name+" / "+elapsed, getRowColor(i), "white", false)
+		elapsed := frutils.ToString(frutils.GetDaysBetween(time.Now(), taskAdded.DateCreated))
+		addedYesterdayElements += createMailRow(taskAdded.Name+" > "+elapsed, getRowColor(i), "white", false)
 	}
 
 	// periodicals
