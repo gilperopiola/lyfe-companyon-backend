@@ -42,7 +42,8 @@ func sendDailyMail() {
 	/* PART 1: INFO RETRIEVAL */
 	/*------------------------*/
 
-	//get dailies
+	// get dailies
+
 	task := &Task{}
 	params := &SearchParameters{
 		FilterTagID:      1,
@@ -57,7 +58,8 @@ func sendDailyMail() {
 
 	dailies, _ := task.Search(params)
 
-	//get doing
+	// get doing
+
 	params.FilterTagID = 0
 	allTasks, _ := task.Search(params)
 	doing := []*Task{}
@@ -68,23 +70,27 @@ func sendDailyMail() {
 	}
 
 	//get done and added
+
 	doneYesterday, _ := task.GetDoneAndArchivedSince(time.Now().AddDate(0, 0, -1))
 	addedYesterday, _ := task.GetAddedSince(time.Now().AddDate(0, 0, -1))
 
 	//get entities
-	problemEntities, err := connect.GetEntitiesOfKind("Problems")
-	if err != nil {
-		log.Println(err.Error())
-	}
+
+	problemEntities, _ := connect.GetEntitiesOfKind("Problems")
 	axiomEntities, _ := connect.GetEntitiesOfKind("Supuestos")
 	errorEntities, _ := connect.GetEntitiesOfKind("Errores")
 	knowledgeEntities, _ := connect.GetEntitiesOfKind("Knowledge")
 
-	log.Printf("%v", problemEntities)
+	//get money & transactions
+
+	money, _ := connect.GetMoneyAmount()
+	transactions, _ := connect.GetDayTransactions()
 
 	/*------------------------*/
 	/*  PART 2: PREPARATION   */
 	/*------------------------*/
+
+	// tasks
 
 	dailyElements := ""
 	for i, daily := range dailies {
@@ -124,21 +130,25 @@ func sendDailyMail() {
 
 	// entities
 
-	problemEntitiesElements := ""
-	for i, problemEntity := range problemEntities {
-		problemEntitiesElements += createMailRow(problemEntity.Name, getRowColor(i), "white", false)
-	}
-	axiomEntitiesElements := ""
-	for i, axiomEntity := range axiomEntities {
-		axiomEntitiesElements += createMailRow(axiomEntity.Name, getRowColor(i), "white", false)
-	}
-	errorEntitiesElements := ""
-	for i, errorEntity := range errorEntities {
-		errorEntitiesElements += createMailRow(errorEntity.Name, getRowColor(i), "white", false)
-	}
-	knowledgeEntitiesElements := ""
-	for i, knowledgeEntity := range knowledgeEntities {
-		knowledgeEntitiesElements += createMailRow(knowledgeEntity.Name, getRowColor(i), "white", false)
+	entitiesElements := ""
+
+	problemIndex := frutils.GetRandomInt(0, len(problemEntities))
+	entitiesElements += createMailRow(problemEntities[problemIndex].Name, getRowColor(0), "white", false)
+
+	axiomIndex := frutils.GetRandomInt(0, len(axiomEntities))
+	entitiesElements += createMailRow(axiomEntities[axiomIndex].Name, getRowColor(1), "white", false)
+
+	errorIndex := frutils.GetRandomInt(0, len(errorEntities))
+	entitiesElements += createMailRow(errorEntities[errorIndex].Name, getRowColor(2), "white", false)
+
+	knowledgeIndex := frutils.GetRandomInt(0, len(knowledgeEntities))
+	entitiesElements += createMailRow(knowledgeEntities[knowledgeIndex].Name, getRowColor(3), "white", false)
+
+	// transactions
+
+	transactionElements := ""
+	for i, transaction := range transactions {
+		transactionElements += createMailRow(transaction.Name+" > "+frutils.ToString(transaction.Amount), getRowColor(i), "white", false)
 	}
 
 	/*------------------------*/
@@ -151,16 +161,14 @@ func sendDailyMail() {
 	<html>
 		<body> ` +
 
-		createMailRow("DAILY", "#511480", "white", true) + dailyElements +
+		createMailRow("DAILY - "+frutils.ToString(money)+"$", "#511480", "white", true) + dailyElements +
 		createMailRow("DOING", "#511480", "white", true) + doingElements +
 		createMailRow("DONE / ARCHIVED YESTERDAY", "#511480", "white", true) + doneYesterdayElements +
 		createMailRow("ADDED YESTERDAY", "#511480", "white", true) + addedYesterdayElements +
 		createMailRow("PERIODICALS TO DO TODAY", "#b9c217", "white", true) + periodicalsTodayElements +
 		createMailRow("PERIODICALS DONE YESTERDAY", "#b9c217", "white", true) + periodicalsYesterdayElements +
-		createMailRow("PROBLEMS", "#511480", "white", true) + problemEntitiesElements +
-		createMailRow("SUPUESTOS", "#511480", "white", true) + axiomEntitiesElements +
-		createMailRow("ERRORS", "#511480", "white", true) + errorEntitiesElements +
-		createMailRow("KNOWLEDGE", "#511480", "white", true) + knowledgeEntitiesElements + `
+		createMailRow("TRANSACTIONS MADE YESTERDAY", "#b9c217", "white", true) + transactionElements +
+		createMailRow("PROB / SUPP / ERR / KNOW", "#511480", "white", true) + entitiesElements + `
 
 			<p style='background-color: black; margin: 0; font-size: 8px'>~</p>
 			<br>
@@ -172,9 +180,14 @@ func sendDailyMail() {
 }
 
 func sendWeeklyMail() {
-	task := &Task{}
 
-	//weeklies
+	/*------------------------*/
+	/* PART 1: INFO RETRIEVAL */
+	/*------------------------*/
+
+	// weeklies
+
+	task := &Task{}
 	params := &SearchParameters{
 		FilterTagID:      2,
 		FilterImportance: 1,
@@ -182,19 +195,34 @@ func sendWeeklyMail() {
 		Limit:            1000,
 		Offset:           0,
 	}
+
 	weeklies, _ := task.Search(params)
 
-	//last week
+	// done & archived last week
+
 	weekAgo := time.Now().Add(-24 * 7 * time.Hour)
 	doneAndArchived, _ := task.GetDoneAndArchivedSince(weekAgo)
 
+	// transactions
+
+	transactions, _ := connect.GetWeekTransactions()
+
+	/*------------------------*/
+	/*  PART 2: PREPARATION   */
+	/*------------------------*/
+
+	// weekly
+
 	weeklyElements := ""
-	doneElements := ""
-	archivedElements := ""
 
 	for i, weeklyTask := range weeklies {
 		weeklyElements += createMailRow(weeklyTask.Name, getRowColor(i), "white", false)
 	}
+
+	// done & archived last week
+
+	doneElements := ""
+	archivedElements := ""
 
 	for _, task := range doneAndArchived {
 		if task.Status == Done {
@@ -206,7 +234,17 @@ func sendWeeklyMail() {
 		}
 	}
 
-	//send mail
+	// transactions
+
+	transactionElements := ""
+	for i, transaction := range transactions {
+		transactionElements += createMailRow(transaction.Name+" > "+frutils.ToString(transaction.Amount), getRowColor(i), "white", false)
+	}
+
+	/*------------------------*/
+	/*  PART 3: MAIL SENDING  */
+	/*------------------------*/
+
 	subject := "Weekly - " + time.Now().Weekday().String() + " " + time.Now().Format("06/01/02")
 
 	html := `
@@ -215,7 +253,8 @@ func sendWeeklyMail() {
 
 		createMailRow("TO DO THIS WEEK", "#511480", "white", true) + weeklyElements +
 		createMailRow("DONE THIS WEEK", "#b9c217", "white", true) + doneElements +
-		createMailRow("ARCHIVED THIS WEEK", "#b9c217", "white", true) + archivedElements + `
+		createMailRow("ARCHIVED THIS WEEK", "#b9c217", "white", true) + archivedElements +
+		createMailRow("TRANSACTED THIS WEEK", "#511480", "white", true) + transactionElements + `
 
 		<p style='background-color: black; margin: 0; font-size: 8px'>~</p>
 		<br>
