@@ -132,16 +132,16 @@ func sendDailyMail() {
 
 	entitiesElements := ""
 
-	problemIndex := frutils.GetRandomInt(0, len(problemEntities))
+	problemIndex := frutils.GetRandomInt(0, len(problemEntities)-1)
 	entitiesElements += createMailRow(problemEntities[problemIndex].Name, getRowColor(0), "white", false)
 
-	axiomIndex := frutils.GetRandomInt(0, len(axiomEntities))
+	axiomIndex := frutils.GetRandomInt(0, len(axiomEntities)-1)
 	entitiesElements += createMailRow(axiomEntities[axiomIndex].Name, getRowColor(1), "white", false)
 
-	errorIndex := frutils.GetRandomInt(0, len(errorEntities))
+	errorIndex := frutils.GetRandomInt(0, len(errorEntities)-1)
 	entitiesElements += createMailRow(errorEntities[errorIndex].Name, getRowColor(2), "white", false)
 
-	knowledgeIndex := frutils.GetRandomInt(0, len(knowledgeEntities))
+	knowledgeIndex := frutils.GetRandomInt(0, len(knowledgeEntities)-1)
 	entitiesElements += createMailRow(knowledgeEntities[knowledgeIndex].Name, getRowColor(3), "white", false)
 
 	// transactions
